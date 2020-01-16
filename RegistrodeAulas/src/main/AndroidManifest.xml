@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="br.ufabc.gravador">
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!-- TODO  -->
+    <application
+        android:requestLegacyExternalStorage="true"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme.NoActionBar"
+        tools:ignore="GoogleAppIndexingWarning">
+
+        <activity android:name="br.ufabc.gravador.views.VideoRecordActivity"></activity>
+        <!-- TODO -->
+        <activity android:name="br.ufabc.gravador.views.CloseRoomActivity" />
+        <activity android:name="br.ufabc.gravador.views.CreateRoomActivity" />
+        <activity android:name="br.ufabc.gravador.views.NameToSaveActivity" />
+        <activity android:name="br.ufabc.gravador.views.SaveGravacaoActivity" />
+        <activity android:name="br.ufabc.gravador.views.AnnotationOnTransmissionActivity" />
+        <activity android:name="br.ufabc.gravador.views.JoinRoomActivity" />
+
+        <activity
+            android:name="br.ufabc.gravador.views.AudioRecordActivity"
+            android:parentActivityName="br.ufabc.gravador.views.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.ufabc.gravador.views.NewRecordActivity" />
+        </activity>
+
+        <activity
+            android:name="br.ufabc.gravador.views.ViewGravacoesActivity"
+            android:parentActivityName="br.ufabc.gravador.views.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.ufabc.gravador.views.MainActivity" />
+        </activity>
+
+        <activity
+            android:name="br.ufabc.gravador.views.SharedRecordActivity"
+            android:parentActivityName="br.ufabc.gravador.views.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.ufabc.gravador.views.MainActivity" />
+        </activity>
+
+        <activity
+            android:name="br.ufabc.gravador.views.NewRecordActivity"
+            android:parentActivityName="br.ufabc.gravador.views.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.ufabc.gravador.views.MainActivity" />
+        </activity>
+
+        <activity
+            android:name="br.ufabc.gravador.views.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
