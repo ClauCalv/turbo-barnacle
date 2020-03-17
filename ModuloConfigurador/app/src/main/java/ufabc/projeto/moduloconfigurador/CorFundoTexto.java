@@ -1,10 +1,17 @@
 package ufabc.projeto.moduloconfigurador;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -12,7 +19,14 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class CorFundoTexto extends AppCompatActivity {
+
+
+import java.util.Locale;
+
+import me.anwarshahriar.calligrapher.Calligrapher;
+import yuku.ambilwarna.AmbilWarnaDialog;
+
+public class CorFundoTexto extends ConfigAll implements TextToSpeech.OnInitListener {
 
     private Button salvarBotao;
     public LinearLayout l;
@@ -20,29 +34,26 @@ public class CorFundoTexto extends AppCompatActivity {
     public TextView text;
     public TextView text1;
 
-
-
     //fundo
-    private Button B_vermelho1;
-    private Button B_amarelo1;
-    private Button B_ciano1;
-    private Button B_branco1;
-    private Button B_preto1;
-    private Button B_azul1;
-    private Button B_verde1;
-    private Button B_roxo1;
-    private Button B_rosa1;
-
+    public ImageView mImageView;
+    public Bitmap bitmap;
+    private int pixelFundo;
     //texto
-    private Button B_vermelho;
-    private Button B_amarelo;
-    private Button B_ciano;
-    private Button B_branco;
-    private Button B_preto;
-    private Button B_azul;
-    private Button B_verde;
-    private Button B_roxo;
-    private Button B_rosa;
+    public ImageView mImageViewText;
+    public Bitmap bitmapText;
+    private int pixelText;
+
+
+
+    public ScrollView testeCor;
+
+
+    //TTS mostrando a velocidade e tom
+    private TextToSpeech textToSpeech;
+    public Boolean teste;
+    public float testeVelocidadeFala;
+    public float testeTomFala;
+
 
 
 
@@ -53,167 +64,83 @@ public class CorFundoTexto extends AppCompatActivity {
         setContentView(R.layout.activity_cor_fundo_texto);
         l = (LinearLayout) findViewById(R.id.layoutId);
         s = (ScrollView) findViewById(R.id.scrollId);
+        salvarBotao = (Button) findViewById(R.id.botaoId);
+
         text = (TextView) findViewById(R.id.textView);
         text1 = (TextView) findViewById(R.id.textView1);
 
-        //fundo
-        B_vermelho1 = (Button) findViewById(R.id.vermelho1button);
-        B_amarelo1 = (Button) findViewById(R.id.amarelo1button);
-        B_ciano1 = (Button) findViewById(R.id.ciano1button);
-        B_branco1 = (Button) findViewById(R.id.buttonbranco1);
-        B_preto1 = (Button) findViewById(R.id.buttonpreto1);
-        B_azul1 = (Button) findViewById(R.id.buttonazul1);
-        B_verde1 = (Button) findViewById(R.id.buttonverde1);
-        B_roxo1 = (Button) findViewById(R.id.buttonroxo1);
-        B_rosa1 = (Button) findViewById(R.id.buttonrosa1);
 
-        //texto
-        B_vermelho = (Button) findViewById(R.id.vermelhobutton);
-        B_amarelo = (Button) findViewById(R.id.amarelobutton);
-        B_ciano = (Button) findViewById(R.id.cianobutton);
-        B_branco = (Button) findViewById(R.id.buttonbranco);
-        B_preto = (Button) findViewById(R.id.buttonpreto);
-        B_azul = (Button) findViewById(R.id.buttonazul);
-        B_verde = (Button) findViewById(R.id.buttonverde);
-        B_roxo = (Button) findViewById(R.id.buttonroxo);
-        B_rosa = (Button) findViewById(R.id.buttonrosa);
+        mImageView = (ImageView) findViewById(R.id.imageColor);
+        mImageViewText = (ImageView) findViewById(R.id.imageColor2);
 
 
-
-        salvarBotao = (Button) findViewById(R.id.botaoId);
+        mImageView.setDrawingCacheEnabled(true);
+        mImageView.buildDrawingCache(true);
+        mImageViewText.setDrawingCacheEnabled(true);
+        mImageViewText.buildDrawingCache(true);
 
         //fundo
-        B_vermelho1.setOnClickListener(new View.OnClickListener() {
+        mImageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View view) {
-                l.setBackgroundResource(R.color.vermelho);
-                s.setBackgroundResource(R.color.vermelho);
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+             if(motionEvent.getAction() == MotionEvent.ACTION_DOWN || motionEvent.getAction() == MotionEvent.ACTION_MOVE){
+                bitmap = mImageView.getDrawingCache();
 
-            }
-        });
+                 pixelFundo = bitmap.getPixel((int) motionEvent.getX(), (int) motionEvent.getY());
 
-        B_amarelo1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                l.setBackgroundResource(R.color.amarelo);
-            }
-        });
-        B_ciano1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                l.setBackgroundResource(R.color.ciano);
-            }
-        });
-        B_branco1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                l.setBackgroundResource(R.color.branco);
-            }
-        });
-        B_preto1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                l.setBackgroundResource(R.color.colorPrimaryDark);
-            }
-        });
+                 int r = Color.red(pixelFundo);
+                 int g = Color.green(pixelFundo);
+                 int b = Color.blue(pixelFundo);
 
-        B_azul1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                l.setBackgroundResource(R.drawable.bg1);
-            }
-        });
-        B_verde1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                l.setBackgroundResource(R.color.verde);
-            }
-        });
-        B_roxo1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                l.setBackgroundResource(R.color.roxo);
-            }
-        });
-        B_rosa1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                l.setBackgroundResource(R.color.rosa);
+                 String hex = "#"+ Integer.toHexString(pixelFundo);
+
+                 s.setBackgroundColor(pixelFundo);
+                 salvarBotao.setBackgroundColor(pixelFundo);
+                 clickFundo(pixelFundo);
+
+
+             }
+
+                return false;
             }
         });
 
         //texto
-        B_vermelho.setOnClickListener(new View.OnClickListener() {
+        mImageViewText.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View view) {
-                text.setTextColor(getResources().getColor(R.color.vermelho));
-                text1.setTextColor(getResources().getColor(R.color.vermelho));
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN || motionEvent.getAction() == MotionEvent.ACTION_MOVE){
+                    bitmapText = mImageViewText.getDrawingCache();
 
-            }
-        });
-        B_amarelo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                text.setTextColor(getResources().getColor(R.color.amarelo));
-                text1.setTextColor(getResources().getColor(R.color.amarelo));
-            }
-        });
-        B_ciano.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                text.setTextColor(getResources().getColor(R.color.ciano));
-                text1.setTextColor(getResources().getColor(R.color.ciano));
-            }
-        });
-        B_branco.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                text.setTextColor(getResources().getColor(R.color.branco));
-                text1.setTextColor(getResources().getColor(R.color.branco));
-            }
-        });
-        B_preto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                text.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-                text1.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+                    pixelText = bitmapText.getPixel((int) motionEvent.getX(), (int) motionEvent.getY());
+
+                    int r = Color.red(pixelText);
+                    int g = Color.green(pixelText);
+                    int b = Color.blue(pixelText);
+
+                    String hex = "#"+ Integer.toHexString(pixelText);
+                    text.setTextColor(Color.rgb(r,g,b));
+                    text1.setTextColor(Color.rgb(r,g,b));
+
+                    salvarBotao.setTextColor(Color.rgb(r,g,b));
+
+
+                    clickTexto(Color.rgb(r,g,b));
+
+                }
+                return false;
             }
         });
 
-        B_azul.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        //som
+        teste = ((ConfigHelper) this.getApplication()).getAtivarOLeitorTela();
+        testeVelocidadeFala = ((ConfigHelper) this.getApplication()).getVelocidadeFala();
+        testeTomFala = ((ConfigHelper) this.getApplication()).getTomFala();
+        if (teste != false) {
+            textToSpeech = new TextToSpeech(this,  this);
+        }
 
-                text.setTextColor(getResources().getColor(R.color.azul));
-                text1.setTextColor(getResources().getColor(R.color.azul));
-
-
-            }
-        });
-        B_verde.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                text.setTextColor(getResources().getColor(R.color.verde));
-                text1.setTextColor(getResources().getColor(R.color.verde));
-            }
-        });
-        B_roxo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                text.setTextColor(getResources().getColor(R.color.roxo));
-                text1.setTextColor(getResources().getColor(R.color.roxo));
-            }
-        });
-        B_rosa.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                text.setTextColor(getResources().getColor(R.color.rosa));
-                text1.setTextColor(getResources().getColor(R.color.rosa));
-            }
-        });
-
-
-
+        ((ConfigHelper) this.getApplication()).setSomeVariable(text);
 
         salvarBotao.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,8 +148,48 @@ public class CorFundoTexto extends AppCompatActivity {
                 Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
                 long milliseconds = 350;
                 vibrator.vibrate(milliseconds);
-                startActivity(new Intent(CorFundoTexto.this,AtivarZoom.class));
+                //startActivity(new Intent(CorFundoTexto.this,AtivarZoom.class)); TELA CERTA
+                startActivity(new Intent(CorFundoTexto.this,TextoNegrito.class)); // PARA TESTE
             }
         });
     }
+
+    public void clickFundo(int corTela){
+        //Para armazenar um valor
+        sharedPreferences.edit().putInt(KEY_COR_TELA, corTela).commit();
+
+    }
+    public void clickTexto(int corTexto){
+        //Para armazenar um valor
+        sharedPreferences.edit().putInt(KEY_COR_TEXTO, corTexto).commit();
+
+    }
+
+    @Override
+    public void onInit(int status) { //FALANDO assim que abre a atividade
+        String falar = "Escolha a cor do fundo em texto"+ "\n Em seguida"+" Escolha a cor do texto." + "\n Botão salvar" ;
+        if (status != TextToSpeech.ERROR) {
+            textToSpeech.setLanguage(Locale.getDefault());
+            textToSpeech.setSpeechRate(testeVelocidadeFala);
+            textToSpeech.setPitch(testeTomFala);
+            textToSpeech.speak(falar, TextToSpeech.QUEUE_FLUSH, null, null);
+        }
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+
+    }
+
+
 }
